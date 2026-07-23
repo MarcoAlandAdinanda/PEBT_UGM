@@ -1,6 +1,13 @@
-import sys
-import ctypes
-import time
+"""Command-line entry point for the RLY-P4-U relay controller."""
+
+from relay_controller import (
+    BOARD_ID,
+    DEFAULT_RELAY_STATE,
+    DEVICE_NAME,
+    RelayCommandError,
+    RelayController,
+    RelayError,
+)
 
 # ---------------------------------------------------------------------------
 # Configuration
@@ -8,72 +15,52 @@ import time
 # IMPORTANT: The model name must match what the Ydci DLL expects internally.
 # The Windows Device Manager shows "RLY-P4-U" but the DLL requires the full
 # model designation "RLY-P4/2/0B-UBT".
-DEVICE_NAME = b"RLY-P4/2/0B-UBT"
-BOARD_ID    = 0                    # Board DIP-switch ID (usually 0)
-NUM_RELAYS  = 4
-RELAY_STATE = (1, 1, 1, 0)        # 1 = ON, 0 = OFF for each relay channel
+RELAY_STATE = DEFAULT_RELAY_STATE  # 1 = ON, 0 = OFF for each relay channel
 
 # Relay 1 Rel Putih Kiri
 # Relay 2 Rel Putih Kanan
-# Relay 3 Rel Hitam
+# Relay 3 Deret Depan (rel hitam pada setup awal)
 
-# ---------------------------------------------------------------------------
-# Load Ydci DLL (cdecl calling convention — undecorated exports)
-# ---------------------------------------------------------------------------
-try:
-    ydci = ctypes.cdll.LoadLibrary("Ydci")
-    print("[OK]  Ydci DLL loaded successfully.")
-except OSError as e:
-    print(f"[FAIL] Could not load Ydci DLL: {e}")
-    sys.exit(1)
 
-# ---------------------------------------------------------------------------
-# Define ctypes argument / return types
-#   YdciOpen(boardType: int, modelName: char*, id: short*, reserved: int) -> int
-#   YdciRlyOutput(id: short, data: ubyte*, offset: int, count: int) -> int
-#   YdciClose(id: short) -> int
-# ---------------------------------------------------------------------------
-ydci.YdciOpen.argtypes  = [ctypes.c_int, ctypes.c_char_p, ctypes.POINTER(ctypes.c_short), ctypes.c_int]
-ydci.YdciOpen.restype   = ctypes.c_int
+def main():
+    """Apply the original default state and return a process exit code."""
 
-ydci.YdciRlyOutput.argtypes = [ctypes.c_short, ctypes.POINTER(ctypes.c_ubyte), ctypes.c_int, ctypes.c_int]
-ydci.YdciRlyOutput.restype  = ctypes.c_int
+    controller = RelayController(
+        device_name=DEVICE_NAME,
+        board_id=BOARD_ID,
+    )
+    exit_code = 0
 
-ydci.YdciClose.argtypes = [ctypes.c_short]
-ydci.YdciClose.restype  = ctypes.c_int
+    try:
+        dev_id = controller.connect()
+        print("[OK]  Ydci DLL loaded successfully.")
+        print("Open  : code=0, dev_id={0}".format(dev_id))
 
-# ---------------------------------------------------------------------------
-# Open the device
-# ---------------------------------------------------------------------------
-dev_id = ctypes.c_short()
-result_open = ydci.YdciOpen(BOARD_ID, DEVICE_NAME, ctypes.byref(dev_id), 0)
-print(f"Open  : code={result_open}, dev_id={dev_id.value}")
+        try:
+            controller.set_states(RELAY_STATE)
+            print("Relay : code=0, states={0}".format(list(RELAY_STATE)))
+            print("[OK]  Relay states applied successfully.")
+        except RelayCommandError as exc:
+            print("Relay : code={0}, states={1}".format(exc.code, list(RELAY_STATE)))
+            print("[WARN] {0}".format(exc))
+            exit_code = 1
 
-if result_open != 0:
-    print(f"[FAIL] YdciOpen error {result_open} (hex: {result_open & 0xFFFFFFFF:#010x})")
-    sys.exit(1)
+    except RelayError as exc:
+        print("[FAIL] {0}".format(exc))
+        exit_code = 1
 
-# ---------------------------------------------------------------------------
-# Set relay outputs
-# ---------------------------------------------------------------------------
-try:
-    output_data = (ctypes.c_ubyte * NUM_RELAYS)(*RELAY_STATE)
-    result_output = ydci.YdciRlyOutput(dev_id, output_data, 0, NUM_RELAYS)
-    print(f"Relay : code={result_output}, states={list(RELAY_STATE)}")
+    finally:
+        if controller.is_connected:
+            try:
+                result_close = controller.close()
+                print("Close : success={0}".format(result_close))
+            except RelayError as exc:
+                print("[WARN] {0}".format(exc))
+                exit_code = 1
 
-    if result_output != 0:
-        print(f"[WARN] YdciRlyOutput error {result_output}")
-    else:
-        print("[OK]  Relay states applied successfully.")
+    print("\nDone.")
+    return exit_code
 
-except Exception as e:
-    print(f"[FAIL] Exception: {e}")
 
-# ---------------------------------------------------------------------------
-# Close the device
-# ---------------------------------------------------------------------------
-finally:
-    result_close = ydci.YdciClose(dev_id)
-    print(f"Close : code={result_close}")
-
-print("\nDone.")
+if __name__ == "__main__":
+    raise SystemExit(main())

@@ -1,0 +1,47 @@
+{
+  "schema_version": 1,
+  "task_type": "generic",
+  "protocol_id": "NEW-EXPERIMENT-V1",
+  "title": "Eksperimen Baru",
+  "protocol_status": "draft",
+  "description": "Dibuat dengan PEBT UGM Web Experiment Studio.",
+  "instructions": "Tekan SPASI untuk memulai eksperimen.",
+  "instruction_pages": [],
+  "random_seed": 2026,
+  "data_directory": "data/experiments",
+  "participant_conditions": [],
+  "display": {
+    "fullscreen": false,
+    "background": "#101820",
+    "foreground": "#FFFFFF",
+    "font_size": 34
+  },
+  "sources": [],
+  "blocks": [
+    {
+      "block_id": "block-1",
+      "instructions": "Tekan SPASI untuk memulai block.",
+      "repetitions": 1,
+      "randomize_trials": false,
+      "trials": [
+        {
+          "trial_id": "trial-1",
+          "condition": "default",
+          "correct_key": null,
+          "metadata": {},
+          "phases": [
+            {
+              "name": "stimulus",
+              "duration_ms": 1000,
+              "text": "Stimulus",
+              "lights": [],
+              "collect_response": false,
+              "allowed_keys": [],
+              "end_on_response": false
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

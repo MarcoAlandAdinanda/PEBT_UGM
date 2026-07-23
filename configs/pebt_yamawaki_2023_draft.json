@@ -1,0 +1,126 @@
+{
+  "schema_version": 1,
+  "task_type": "pebt",
+  "protocol_id": "PEBT-YAMAWAKI-2023-DRAFT-V1",
+  "title": "PEBT Dua Set - Adaptasi Yamawaki et al. (2023)",
+  "protocol_status": "draft",
+  "description": "DRAFT BERBASIS PAPER CONTOH. Struktur SET1/SET2, 24 pilihan per set, frekuensi waktu tunggu, urutan blok 12 lalu 4 lampu, dan konfirmasi lampu diambil dari Yamawaki et al. (2023). Sebelum pengambilan data final, peneliti harus mengonfirmasi bank relay untuk kondisi 4 lampu, terjemahan instruksi, detail latihan dan pengulangan konfirmasi lampu, aset karakter/agent, prosedur Wizard-of-Oz, dan pembentukan pasangan faktor.",
+  "instructions": "Tugas ini mengukur pilihan antara SEST dan DIFT. SEST tidak menyalakan lampu tetapi dapat membutuhkan waktu lebih lama. DIFT membutuhkan waktu lebih singkat tetapi menyalakan lampu dan menghasilkan emisi CO₂. Ikuti instruksi setiap blok. Tekan SPASI untuk memulai.",
+  "instruction_pages": [
+    {
+      "page_id": "task-overview",
+      "title": "PETUNJUK PEBT - PERJALANAN VIRTUAL",
+      "text": "Pada setiap perjalanan, Anda memilih salah satu dari dua moda: SEST atau DIFT. Setelah memilih, layar menunggu akan muncul selama waktu perjalanan. Ketika waktu selesai, pilihan perjalanan berikutnya akan ditampilkan.",
+      "hint": "Tekan SPASI untuk melanjutkan"
+    },
+    {
+      "page_id": "environmental-tradeoff",
+      "title": "SEST DAN DIFT",
+      "text": "SEST adalah pilihan ramah lingkungan: lampu tidak menyala dan emisi yang ditampilkan adalah 0 L/jam, tetapi waktunya dapat lebih lama. DIFT membutuhkan waktu lebih singkat, tetapi 12 atau 4 lampu akan menyala selama waktu perjalanan dan menghasilkan emisi yang ditampilkan.",
+      "hint": "Tekan SPASI untuk melanjutkan"
+    },
+    {
+      "page_id": "response-and-blocks",
+      "title": "CARA MEMILIH",
+      "text": "Tekan PANAH KIRI untuk memilih SEST atau PANAH KANAN untuk memilih DIFT. Setiap SET memiliki 24 perjalanan: 12 perjalanan dengan kondisi 12 lampu, kemudian 12 perjalanan dengan kondisi 4 lampu. Pilih sesuai keputusan Anda pada setiap perjalanan.",
+      "hint": "Tekan SPASI jika instruksi sudah dipahami"
+    }
+  ],
+  "random_seed": 20230722,
+  "data_directory": "data/experiments",
+  "participant_conditions": [
+    "interactive_agent",
+    "non_interactive_agent"
+  ],
+  "display": {
+    "fullscreen": true,
+    "background": "#F7F7F7",
+    "foreground": "#111111",
+    "font_size": 28
+  },
+  "sources": [
+    {
+      "source_type": "research_paper",
+      "title": "Effects of virtual agent interactivity on pro-environmental behavior promotion",
+      "citation": "Yamawaki, M., Ueda, K., Ishii, H., Shimoda, H., Ito, K., Sato, H., Fujioka, T., Sun, Q., Asa, Y., & Numata, T. (2023). Journal of Environmental Psychology, 88, 101999.",
+      "url": "https://doi.org/10.1016/j.jenvp.2023.101999",
+      "pages": "2-4 and 9 (Appendix D)",
+      "notes": "Primary example supplied by the project user. Local PDF SHA-256: 8B6B5E91EB14EB94B0761139BCCE3E8D2FF14BBED588782F2D0BF1BACF4D5E61. Defines SET1/SET2 flow, keyboard choice, 24 trials, 12/4-light blocks, 10-second light confirmation, DIFT/SEST waiting-time frequencies, and approximately five-minute agent contact."
+    },
+    {
+      "source_type": "research_paper",
+      "title": "Validating the Pro-Environmental Behavior Task in a Japanese Sample",
+      "citation": "Lange, F., & Iwasaki, S. (2020). Sustainability, 12(22), 9534.",
+      "url": "https://doi.org/10.3390/su12229534",
+      "pages": "Materials and Methods",
+      "notes": "Used to verify the OpenSesame choice-contingent waiting logic and participant-level randomization approach."
+    },
+    {
+      "source_type": "other",
+      "title": "Public OpenSesame PEBT validation materials",
+      "citation": "Lange & Iwasaki (2020), OSF project vxpmq",
+      "url": "https://osf.io/vxpmq/",
+      "pages": "PEBT_validation_Japan.osexp",
+      "notes": "Inspected as a reference implementation only. External images and copyrighted agent assets are not redistributed in this repository."
+    },
+    {
+      "source_type": "hardware_manual",
+      "title": "RLY-P4/2/0B-UBT Hardware Manual",
+      "citation": "Y2 Corporation, RLY-P4/2/0B-UBT Instruction Manual",
+      "url": "https://cdn.y2c.co.jp/ub/pdf/rly-p4_2_0b-ubt.pdf",
+      "pages": "4-7",
+      "notes": "Board ID, terminal mapping, electrical ratings, and wiring safety."
+    },
+    {
+      "source_type": "software_manual",
+      "title": "UB Series Software Manual",
+      "citation": "Y2 Corporation, UB Series Software Manual",
+      "url": "https://cdn.y2c.co.jp/docs/softwaremanual/ub/ub_softwaremanual.pdf",
+      "pages": "7-15, 28-32",
+      "notes": "YdciOpen, YdciClose, YdciRlyOutput, status readback, and error codes."
+    }
+  ],
+  "generator": {
+    "type": "pebt_yamawaki_2023",
+    "sest_key": "left",
+    "dift_key": "right",
+    "dift_wait_seconds": {
+      "5": 8,
+      "10": 4,
+      "15": 4,
+      "20": 4,
+      "25": 4
+    },
+    "time_difference_seconds": {
+      "0": 2,
+      "5": 8,
+      "10": 10,
+      "15": 4
+    },
+    "light_blocks": [
+      {
+        "light_count": 12,
+        "relay_sides": ["left", "right", "front"],
+        "trial_count": 12,
+        "mapping_note": "Mapping 12 lampu: Relay 1, 2, dan 3 aktif; Relay 4 tetap OFF."
+      },
+      {
+        "light_count": 4,
+        "relay_sides": ["front"],
+        "trial_count": 12,
+        "mapping_note": "ASUMSI PROYEK: empat lampu menggunakan deret depan pada Relay 3. Konfirmasi peneliti diperlukan sebelum validasi."
+      }
+    ],
+    "sets": [
+      {
+        "set_id": "SET1",
+        "observer_label": "karakter kucing baseline (aset eksternal belum disertakan)"
+      },
+      {
+        "set_id": "SET2",
+        "observer_label": "agent Piyota sesuai kondisi antar-partisipan (dikendalikan eksternal)",
+        "contact_instruction": "CHECKPOINT OPERATOR - kondisi yang dipilih: {participant_condition}. Sebelum SET2, lakukan kontak dengan agent selama sekitar 5 menit sesuai kondisi tersebut menggunakan display/remote-control eksternal. Setelah prosedur agent selesai, tekan SPASI. Durasi gate dicatat pada event block_gate_complete dan dapat diaudit bersama event block_start."
+      }
+    ]
+  }
+}

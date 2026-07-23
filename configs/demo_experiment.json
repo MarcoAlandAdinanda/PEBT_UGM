@@ -1,0 +1,77 @@
+{
+  "schema_version": 1,
+  "protocol_id": "DEMO-LAMP-DIRECTIONS-V1",
+  "title": "Demo Pemilihan Arah Lampu",
+  "protocol_status": "demo",
+  "description": "DEMO ONLY. Timing dan jumlah trial bukan protokol penelitian dan harus diganti dari paper yang telah disetujui.",
+  "instructions": "Ini adalah mode demonstrasi, bukan pengambilan data penelitian. Tekan SPASI untuk memulai.",
+  "random_seed": 2026,
+  "data_directory": "data/experiments",
+  "display": {
+    "fullscreen": false,
+    "background": "#101820",
+    "foreground": "#FFFFFF",
+    "font_size": 34
+  },
+  "sources": [
+    {
+      "source_type": "hardware_manual",
+      "title": "RLY-P4/2/0B-UBT Hardware Manual",
+      "citation": "Y2 Corporation, RLY-P4/2/0B-UBT Instruction Manual",
+      "url": "https://cdn.y2c.co.jp/ub/pdf/rly-p4_2_0b-ubt.pdf",
+      "pages": "4-7",
+      "notes": "Board ID, terminal mapping, electrical ratings, and wiring safety."
+    },
+    {
+      "source_type": "software_manual",
+      "title": "UB Series Software Manual",
+      "citation": "Y2 Corporation, UB Series Software Manual",
+      "url": "https://cdn.y2c.co.jp/docs/softwaremanual/ub/ub_softwaremanual.pdf",
+      "pages": "7-15, 28-32",
+      "notes": "YdciOpen, YdciClose, YdciRlyOutput, status readback, and error codes."
+    }
+  ],
+  "blocks": [
+    {
+      "block_id": "demo-directions",
+      "instructions": "Tiga kondisi arah akan ditampilkan secara acak. Tekan SPASI ketika stimulus muncul.",
+      "repetitions": 1,
+      "randomize_trials": true,
+      "trials": [
+        {
+          "trial_id": "demo-left",
+          "condition": "left",
+          "correct_key": "space",
+          "metadata": {"research_use": false},
+          "phases": [
+            {"name": "fixation", "duration_ms": 500, "text": "+", "lights": [], "collect_response": false},
+            {"name": "stimulus", "duration_ms": 1200, "text": "SPASI", "lights": ["left"], "collect_response": true, "allowed_keys": ["space"]},
+            {"name": "inter_trial", "duration_ms": 500, "text": "", "lights": [], "collect_response": false}
+          ]
+        },
+        {
+          "trial_id": "demo-right",
+          "condition": "right",
+          "correct_key": "space",
+          "metadata": {"research_use": false},
+          "phases": [
+            {"name": "fixation", "duration_ms": 500, "text": "+", "lights": [], "collect_response": false},
+            {"name": "stimulus", "duration_ms": 1200, "text": "SPASI", "lights": ["right"], "collect_response": true, "allowed_keys": ["space"]},
+            {"name": "inter_trial", "duration_ms": 500, "text": "", "lights": [], "collect_response": false}
+          ]
+        },
+        {
+          "trial_id": "demo-front",
+          "condition": "front",
+          "correct_key": "space",
+          "metadata": {"research_use": false},
+          "phases": [
+            {"name": "fixation", "duration_ms": 500, "text": "+", "lights": [], "collect_response": false},
+            {"name": "stimulus", "duration_ms": 1200, "text": "SPASI", "lights": ["front"], "collect_response": true, "allowed_keys": ["space"]},
+            {"name": "inter_trial", "duration_ms": 500, "text": "", "lights": [], "collect_response": false}
+          ]
+        }
+      ]
+    }
+  ]
+}

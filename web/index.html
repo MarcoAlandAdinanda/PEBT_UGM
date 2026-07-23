@@ -1,0 +1,283 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="color-scheme" content="light">
+    <meta name="theme-color" content="#eaf2f3">
+    <title>PEBT UGM Experiment Studio</title>
+    <link rel="stylesheet" href="/styles.css">
+    <script type="module" src="/app.js"></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#workspace">Lewati ke workspace</a>
+    <div class="ambient ambient-a" aria-hidden="true"></div>
+    <div class="ambient ambient-b" aria-hidden="true"></div>
+    <div class="noise" aria-hidden="true"></div>
+
+    <div class="app-shell">
+      <aside class="sidebar glass-strong" aria-label="Navigasi aplikasi">
+        <div class="brand-lockup">
+          <div class="brand-mark" aria-hidden="true">P</div>
+          <div>
+            <p class="eyebrow">UGM Research Tools</p>
+            <p class="brand-name">PEBT Studio</p>
+          </div>
+        </div>
+
+        <nav class="primary-nav" aria-label="Mode aplikasi">
+          <button class="nav-item is-active" data-view-target="build" type="button" aria-pressed="true">
+            <span class="nav-index">01</span>
+            <span><strong>Build</strong><small>Susun protokol</small></span>
+          </button>
+          <button class="nav-item" data-view-target="execute" type="button" aria-pressed="false">
+            <span class="nav-index">02</span>
+            <span><strong>Execute</strong><small>Jalankan sesi</small></span>
+          </button>
+          <button class="nav-item" data-view-target="manual" type="button" aria-pressed="false">
+            <span class="nav-index">03</span>
+            <span><strong>Manual</strong><small>System setup</small></span>
+          </button>
+        </nav>
+
+        <div class="sidebar-spacer"></div>
+        <section class="sidebar-system" aria-labelledby="sidebar-system-title">
+          <div class="section-kicker" id="sidebar-system-title">System pulse</div>
+          <div class="system-line">
+            <span class="status-led" id="sidebar-relay-led"></span>
+            <div><strong id="sidebar-relay-label">Relay offline</strong><small id="sidebar-mode-label">Memuat mode…</small></div>
+          </div>
+          <div class="channel-mini" aria-label="Status empat kanal relay">
+            <span data-mini-channel="0">1</span>
+            <span data-mini-channel="1">2</span>
+            <span data-mini-channel="2">3</span>
+            <span data-mini-channel="3" class="channel-unused">4</span>
+          </div>
+        </section>
+      </aside>
+
+      <main class="main-area" id="workspace">
+        <header class="topbar glass-soft">
+          <div>
+            <p class="eyebrow" id="view-eyebrow">Experiment authoring</p>
+            <h1 id="view-title">Build Experiment</h1>
+            <p class="topbar-copy" id="view-subtitle">Rancang struktur, variabel, stimulus, dan timing dalam satu workspace.</p>
+          </div>
+          <div class="topbar-actions">
+            <div class="mode-pill" id="mode-pill"><span></span>Memuat sistem</div>
+            <button class="button danger-quiet" id="global-all-off" type="button">Matikan semua</button>
+          </div>
+        </header>
+
+        <div class="status-strip" id="status-strip" role="status" aria-live="polite">
+          <span class="status-strip-icon">●</span>
+          <span id="status-message">Menghubungkan ke Python backend…</span>
+        </div>
+
+        <section class="view is-active" id="view-build" data-view="build" aria-labelledby="view-title">
+          <div class="command-bar glass-soft">
+            <div class="command-group">
+              <button class="button secondary" id="builder-new" type="button">Eksperimen baru</button>
+              <label class="select-label compact">
+                <span>Buka konfigurasi</span>
+                <select id="builder-config-select"></select>
+              </label>
+              <button class="button secondary" id="builder-load" type="button">Buka</button>
+            </div>
+            <div class="command-group align-end">
+              <button class="button secondary" id="builder-validate" type="button">Validasi</button>
+              <button class="button secondary" id="builder-save" type="button">Simpan</button>
+              <button class="button primary" id="builder-use" type="button">Gunakan di Execute</button>
+            </div>
+          </div>
+
+          <div class="bento-grid build-grid">
+            <article class="glass-card outline-card">
+              <div class="card-heading">
+                <div><p class="section-kicker">Sequence</p><h2>Struktur eksperimen</h2></div>
+                <span class="count-chip" id="builder-node-count">0 item</span>
+              </div>
+              <div class="tree" id="builder-tree" role="tree" aria-label="Struktur eksperimen"></div>
+              <div class="tree-actions" aria-label="Operasi struktur">
+                <button type="button" data-tree-action="add-block">+ Block</button>
+                <button type="button" data-tree-action="add-trial">+ Trial</button>
+                <button type="button" data-tree-action="add-phase">+ Phase</button>
+                <button type="button" data-tree-action="duplicate">Duplikasi</button>
+                <button type="button" data-tree-action="move-up">Naik</button>
+                <button type="button" data-tree-action="move-down">Turun</button>
+                <button class="danger-text" type="button" data-tree-action="delete">Hapus</button>
+              </div>
+            </article>
+
+            <article class="glass-card inspector-card">
+              <div class="card-heading">
+                <div><p class="section-kicker">Inspector</p><h2 id="inspector-title">Properti experiment</h2></div>
+                <span class="dirty-dot" id="builder-dirty" title="Status dokumen"></span>
+              </div>
+              <form id="inspector-form" class="inspector-form"></form>
+              <button class="button dark full-width" id="inspector-apply" type="button">Terapkan properti</button>
+            </article>
+
+            <article class="glass-card audit-card tone-mint">
+              <div class="card-heading">
+                <div><p class="section-kicker">Protocol audit</p><h2>Kesiapan dokumen</h2></div>
+                <span class="status-badge draft" id="builder-status-badge">DRAFT</span>
+              </div>
+              <div class="metric-cluster">
+                <div><strong id="metric-blocks">—</strong><span>Blocks</span></div>
+                <div><strong id="metric-trials">—</strong><span>Trials</span></div>
+                <div><strong id="metric-phases">—</strong><span>Phases</span></div>
+              </div>
+              <div class="audit-message" id="builder-audit-message">Validasi dokumen untuk melihat ringkasan protokol.</div>
+              <dl class="compact-list">
+                <div><dt>File</dt><dd id="builder-file-label">Belum disimpan</dd></div>
+                <div><dt>Seed</dt><dd id="builder-seed-label">—</dd></div>
+                <div><dt>Kondisi</dt><dd id="builder-condition-label">—</dd></div>
+              </dl>
+            </article>
+
+            <article class="glass-card guide-card tone-amber">
+              <p class="section-kicker">Workflow</p>
+              <h2>Dari ide ke sesi</h2>
+              <ol class="step-list">
+                <li><span>01</span><p><strong>Build</strong>Susun block, trial, dan phase.</p></li>
+                <li><span>02</span><p><strong>Validate</strong>Periksa timing, key, dan sumber.</p></li>
+                <li><span>03</span><p><strong>Execute</strong>Jalankan snapshot yang tervalidasi.</p></li>
+              </ol>
+            </article>
+          </div>
+        </section>
+
+        <section class="view" id="view-execute" data-view="execute" aria-labelledby="view-title">
+          <div class="bento-grid execute-grid">
+            <article class="glass-card session-card">
+              <div class="card-heading">
+                <div><p class="section-kicker">Session setup</p><h2>Identitas sesi</h2></div>
+                <span class="status-badge" id="execute-config-source">FILE</span>
+              </div>
+              <form id="execute-form" class="form-stack">
+                <label><span>Konfigurasi eksperimen</span><select id="execute-config-select" name="config_id"></select></label>
+                <div class="form-split">
+                  <label><span>ID partisipan</span><input id="participant-id" name="participant_id" autocomplete="off" required placeholder="mis. P001"></label>
+                  <label><span>Label sesi</span><input id="session-label" name="session_label" autocomplete="off" value="S1"></label>
+                </div>
+                <label><span>Kondisi partisipan</span><select id="participant-condition" name="participant_condition"><option value="">Tidak digunakan</option></select></label>
+                <label class="check-row"><input id="allow-unvalidated" type="checkbox"><span>Izinkan menjalankan protokol demo/draft untuk pilot sistem</span></label>
+              </form>
+              <div class="button-row">
+                <button class="button secondary" id="execute-validate" type="button">Muat & validasi</button>
+                <button class="button primary large" id="execute-start" type="button">Mulai eksperimen</button>
+              </div>
+            </article>
+
+            <article class="glass-card summary-card tone-mint">
+              <div class="card-heading">
+                <div><p class="section-kicker">Protocol snapshot</p><h2 id="execute-protocol-title">Belum dipilih</h2></div>
+                <span class="status-badge" id="execute-protocol-status">—</span>
+              </div>
+              <p class="summary-description" id="execute-description">Pilih konfigurasi untuk menampilkan ringkasan.</p>
+              <div class="metric-cluster four">
+                <div><strong id="execute-blocks">—</strong><span>Blocks</span></div>
+                <div><strong id="execute-trials">—</strong><span>Trials</span></div>
+                <div><strong id="execute-pages">—</strong><span>Pages</span></div>
+                <div><strong id="execute-duration">—</strong><span>Durasi</span></div>
+              </div>
+              <div class="hash-line"><span>Config hash</span><code id="execute-hash">—</code></div>
+            </article>
+
+            <article class="glass-card readiness-card">
+              <p class="section-kicker">Hardware readiness</p>
+              <h2>Sebelum mulai</h2>
+              <ul class="readiness-list">
+                <li id="ready-backend"><span></span>Python backend tersedia</li>
+                <li id="ready-config"><span></span>Konfigurasi valid</li>
+                <li id="ready-relay"><span></span>Relay belum terhubung</li>
+                <li><span class="locked"></span>Relay 4 dipaksa OFF</li>
+              </ul>
+            </article>
+
+            <article class="glass-card history-card">
+              <div class="card-heading">
+                <div><p class="section-kicker">Session archive</p><h2>Hasil terbaru</h2></div>
+                <button class="text-button" id="refresh-results" type="button">Refresh</button>
+              </div>
+              <div class="result-list" id="result-list"><p class="empty-state">Belum ada hasil sesi.</p></div>
+            </article>
+          </div>
+        </section>
+
+        <section class="view" id="view-manual" data-view="manual" aria-labelledby="view-title">
+          <div class="manual-command glass-soft">
+            <div>
+              <p class="section-kicker">Hardware lease</p>
+              <strong id="manual-connection-copy">Relay belum terhubung</strong>
+            </div>
+            <div class="button-row">
+              <button class="button secondary" id="relay-connect" type="button">Hubungkan relay</button>
+              <button class="button secondary" id="relay-disconnect" type="button">Putuskan</button>
+              <button class="button danger" id="manual-all-off" type="button">Matikan semua</button>
+            </div>
+          </div>
+
+          <div class="bento-grid manual-grid">
+            <article class="glass-card lamp-card lamp-front" data-lamp="front">
+              <div class="lamp-card-title"><span>CH 3</span><h2>Deret depan</h2></div>
+              <div class="bulb-rail horizontal" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+              <button class="lamp-toggle" type="button" data-side="front" aria-pressed="false">Pilih deret depan</button>
+            </article>
+            <article class="glass-card lamp-card lamp-left" data-lamp="left">
+              <div class="lamp-card-title"><span>CH 1</span><h2>Deret kiri</h2></div>
+              <div class="bulb-rail vertical" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+              <button class="lamp-toggle" type="button" data-side="left" aria-pressed="false">Pilih deret kiri</button>
+            </article>
+            <article class="glass-card control-core tone-mint">
+              <p class="section-kicker">Requested output</p>
+              <h2 id="manual-selection">Tidak ada deret dipilih</h2>
+              <div class="relay-vector" id="manual-vector">[0, 0, 0, 0]</div>
+              <button class="button primary large full-width" id="manual-apply" type="button">Terapkan ke relay</button>
+              <div class="actual-state"><span>Actual readback</span><strong id="manual-readback">[0, 0, 0, 0]</strong></div>
+            </article>
+            <article class="glass-card lamp-card lamp-right" data-lamp="right">
+              <div class="lamp-card-title"><span>CH 2</span><h2>Deret kanan</h2></div>
+              <div class="bulb-rail vertical" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+              <button class="lamp-toggle" type="button" data-side="right" aria-pressed="false">Pilih deret kanan</button>
+            </article>
+            <article class="glass-card safety-card tone-amber">
+              <p class="section-kicker">Safety interlock</p>
+              <h2>Channel 4 tidak digunakan</h2>
+              <p>Backend selalu menghasilkan state <code>(left, right, front, 0)</code>. Manual control otomatis dikunci selama eksperimen aktif.</p>
+              <div class="lock-chip">CH 4 · FORCED OFF</div>
+            </article>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <section class="runner" id="runner" role="dialog" aria-modal="true" aria-hidden="true" aria-label="Layar eksperimen">
+      <div class="runner-topline">
+        <span id="runner-progress">Menyiapkan sesi</span>
+        <button id="runner-abort" type="button">Batalkan · Esc</button>
+      </div>
+      <div class="runner-stage" id="runner-stage">
+        <div class="runner-content">
+          <p class="runner-kicker" id="runner-kicker"></p>
+          <h2 id="runner-title">Eksperimen</h2>
+          <div class="runner-text" id="runner-text"></div>
+          <div class="pebt-stimulus" id="pebt-stimulus" hidden></div>
+          <div class="runner-actions" id="runner-actions"></div>
+        </div>
+      </div>
+      <div class="runner-footer"><span id="runner-hint"></span><span id="runner-relay-state">Relay [0, 0, 0, 0]</span></div>
+    </section>
+
+    <div class="toast-region" id="toast-region" aria-live="polite" aria-atomic="true"></div>
+    <div class="modal-backdrop" id="confirm-modal" hidden>
+      <div class="confirm-card" role="alertdialog" aria-modal="true" aria-labelledby="confirm-title" aria-describedby="confirm-copy">
+        <p class="section-kicker">Konfirmasi</p>
+        <h2 id="confirm-title">Lanjutkan?</h2>
+        <p id="confirm-copy"></p>
+        <div class="button-row align-end"><button class="button secondary" id="confirm-cancel" type="button">Batal</button><button class="button danger" id="confirm-ok" type="button">Ya, lanjutkan</button></div>
+      </div>
+    </div>
+  </body>
+</html>
